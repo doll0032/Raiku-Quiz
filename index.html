@@ -10,11 +10,11 @@
       background: linear-gradient(135deg, #0d0f1c 0%, #1a2a6c 100%);
       color: #fff;
       margin: 0;
-      min-height: 100vh;
+      padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      min-height: 100vh;
     }
     .container {
       background: rgba(20, 20, 40, 0.95);
@@ -22,21 +22,22 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.3);
       width: 100%;
       max-width: 800px;
-      padding: 30px;
-      text-align: center;
+      padding: 20px;
+      margin: 20px;
     }
     .logo {
-      font-size: 2.3rem;
+      font-size: 2.5rem;
       font-weight: bold;
       background: linear-gradient(45deg, #48c6ef, #6f86d6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 15px;
+      text-align: center;
+      margin-bottom: 10px;
     }
-    .subtitle { margin-bottom: 25px; color: #aaa; }
+    .subtitle { text-align: center; margin-bottom: 20px; color: #aaa; }
     .quiz-section { display: none; }
     .quiz-section.active { display: block; animation: fadeIn 0.5s ease; }
-    @keyframes fadeIn { from {opacity:0; transform: translateY(10px);} to {opacity:1; transform: translateY(0);} }
+    @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
     .question { margin-bottom: 15px; font-size: 1.2rem; }
     .options { display: grid; gap: 12px; }
     .option {
@@ -45,12 +46,14 @@
       border-radius: 12px;
       padding: 12px;
       cursor: pointer;
-      transition: 0.2s;
+      transition: 0.3s;
     }
-    .option:hover { border-color: #48c6ef; }
+    .option:hover { border-color: #48c6ef; transform: scale(1.02); }
     .option.correct { border-color: #4caf50; }
     .option.incorrect { border-color: #f44336; }
     .btn {
+      display: block;
+      margin: 20px auto 0;
       background: linear-gradient(45deg, #48c6ef, #6f86d6);
       border: none;
       padding: 12px 25px;
@@ -58,52 +61,49 @@
       color: white;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 15px;
     }
     .role-info {
-      background: rgba(30, 30, 60, 0.95);
+      background: rgba(19, 25, 44, 0.95);
       padding: 20px;
       border-radius: 12px;
-      margin: 15px 0;
+      margin-top: 20px;
+      text-align: center;
     }
-    .badge {
-      margin: 10px auto;
-      padding: 10px;
-      border-radius: 15px;
-      font-weight: bold;
-      background: #222;
-      width: fit-content;
-    }
+    .feedback { margin-top: 15px; font-weight: bold; text-align: center; }
+    .feedback.correct { color: #4caf50; }
+    .feedback.incorrect { color: #f44336; }
     .progress-bar {
-      margin-top: 15px;
-      background: #222;
-      border-radius: 10px;
+      width: 100%;
+      background: #333;
+      border-radius: 20px;
+      margin: 20px 0;
+      height: 20px;
       overflow: hidden;
-      height: 14px;
     }
     .progress {
-      background: linear-gradient(90deg, #48c6ef, #6f86d6);
       height: 100%;
       width: 0%;
+      background: linear-gradient(45deg, #48c6ef, #6f86d6);
       transition: width 0.4s ease;
     }
-    input {
-      padding: 8px 12px;
-      border-radius: 8px;
-      border: none;
-      margin-top: 10px;
-      width: 70%;
-    }
-    .intro-list { text-align: left; font-size: 0.95rem; margin-top: 10px; }
-    .badge-info { margin: 5px 0; }
-    .hint-tip { font-size: 0.8rem; margin-top: 8px; color: #bbb; }
-    .funfact {
-      margin-top: 12px;
-      padding: 10px;
-      background: #0f1830;
-      border-left: 4px solid gold;
-      border-radius: 8px;
+    .badge {
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 15px;
+      background: #1f2a48;
+      border-radius: 12px;
+      border: 2px solid #48c6ef;
       font-size: 0.9rem;
+    }
+    .socials {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .socials a {
+      margin: 0 10px;
+      color: #48c6ef;
+      font-size: 1.5rem;
+      text-decoration: none;
     }
   </style>
 </head>
@@ -112,112 +112,112 @@
     <div class="logo">🌀 RAIKU QUIZ</div>
     <div class="subtitle">Learn Raiku while playing!</div>
 
-    <!-- Intro screen -->
-    <div id="intro" class="quiz-section active">
-      <div class="lead">What is Raiku? 🤔</div>
-      <div class="intro-list">
-        <div>• Raiku helps Solana apps run smoothly, even in heavy traffic.</div>
-        <div>• It ensures transactions go through without failing.</div>
-        <div>• Developers can reserve block space so users don’t get stuck.</div>
-        <div>• Perfect for trading, gaming, and AI apps that need to be super fast.</div>
+    <!-- Intro Screen -->
+    <div id="intro-screen" class="quiz-section active">
+      <h2>Welcome to Raiku!</h2>
+      <p>
+        Raiku is building a new coordination layer on Solana to provide<br>
+        guaranteed transaction inclusion, deterministic execution, and reliable scheduling.
+      </p>
+      <p>🎯 Answer 10 questions and unlock special badges:</p>
+      <ul>
+        <li>3 correct → <b>Storm Chaser</b></li>
+        <li>5 correct → <b>Chain Master</b></li>
+        <li>8 correct → <b>Raiku Ascendant</b></li>
+        <li>10/10 → <b>Legend of Raiku</b></li>
+      </ul>
+      <div class="socials">
+        <a href="https://twitter.com/raiku_xyz" target="_blank">🐦</a>
+        <a href="https://discord.gg/raiku" target="_blank">💬</a>
+        <a href="https://www.raiku.com" target="_blank">🌐</a>
       </div>
-
-      <div style="margin-top:16px" class="lead">Badges 🏆</div>
-      <div class="intro-list">
-        <div class="badge-info">🌱 3 correct → <strong>Raiku Sprout</strong></div>
-        <div class="badge-info">⚡ 5 correct → <strong>Raiku Spark</strong></div>
-        <div class="badge-info">🌪️ 8 correct → <strong>Raiku Storm</strong></div>
-        <div class="badge-info">🌀 10 correct → <strong>Raiku Ascendant</strong></div>
-      </div>
-
-      <div style="margin-top:16px" class="lead">Connect with Raiku 🌐</div>
-      <div style="display:flex; gap:14px; justify-content:center; font-size:22px; margin-top:6px">
-        <a href="https://twitter.com/Raiku" target="_blank" title="Twitter">🐦</a>
-        <a href="https://discord.gg/raiku" target="_blank" title="Discord">💬</a>
-        <a href="https://raiku.xyz" target="_blank" title="Website">🌐</a>
-        <a href="https://github.com/RaikuHQ" target="_blank" title="GitHub">📂</a>
-      </div>
-
-      <div style="margin-top:18px">
-        <label class="small">Enter your display name</label><br/>
-        <input id="username" placeholder="Your name"/>
-        <div>
-          <button id="startWithName" class="btn">Start Quiz</button>
-        </div>
-        <div class="hint-tip">Easter eggs: triple-click logo or try Konami code 🎮</div>
-      </div>
+      <input id="username" placeholder="Enter your username" style="padding:8px;border-radius:8px;border:none;width:100%;margin-top:15px;text-align:center;">
+      <button class="btn" onclick="startQuiz()">Start Quiz</button>
     </div>
 
-    <!-- Quiz screen -->
+    <!-- Quiz Screen -->
     <div id="quiz-screen" class="quiz-section">
-      <div id="question-text" class="question"></div>
-      <div id="options-container" class="options"></div>
-      <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Next</button>
       <div class="progress-bar"><div id="progress" class="progress"></div></div>
-      <div id="funfact" class="funfact"></div>
+      <div class="question" id="question-text"></div>
+      <div class="options" id="options-container"></div>
+      <div id="feedback" class="feedback"></div>
+      <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Next</button>
     </div>
 
-    <!-- Role info -->
+    <!-- Role Info -->
     <div id="role-screen" class="quiz-section">
       <h2>🎭 Discord Role Info</h2>
-      <div id="role-info" class="role-info"></div>
+      <div class="role-info" id="role-info"></div>
       <button class="btn" onclick="continueQuiz()">Continue</button>
     </div>
 
-    <!-- Results -->
+    <!-- Results Screen -->
     <div id="results-screen" class="quiz-section">
       <h2>Quiz Complete!</h2>
       <p id="results-message"></p>
-      <div id="badge-earned"></div>
+      <div id="badges-earned"></div>
       <button class="btn" onclick="restartQuiz()">Play Again</button>
     </div>
   </div>
 
   <script>
     const quizData = [
-      { question: "What core issue does Raiku solve in Solana?", options: ["Slow consensus","Failed transactions in congestion","High fees","Low adoption"], correct: 1 },
-      { question: "What unique feature helps Raiku manage Solana traffic?", options: ["Blockspace reservations","Proof of Work","Mining incentives","Bridges"], correct: 0 },
-      { question: "Raiku ensures ___ even during high traffic.", options: ["transaction reliability","NFT rarity","high gas fees","centralized validators"], correct: 0 },
-      { question: "Who benefits most from Raiku’s blockspace reservations?", options: ["Casual users","Developers & dApps","Validators only","Bridges"], correct: 1 },
-      { question: "What type of apps need Raiku the most?", options: ["Games & AI apps","Only DeFi","Offline apps","None"], correct: 0 },
-      { question: "What is Raiku’s role in UX?", options: ["Makes it simple & smooth","Adds complexity","Raises costs","Limits users"], correct: 0 },
-      { question: "Which pain point does Raiku directly fix?", options: ["Wallet popups","Bridge exploits","Transaction congestion","2FA issues"], correct: 2 },
-      { question: "Raiku reserves blockspace to prevent ___?", options: ["Spamming","Transaction failures","Identity theft","Centralization"], correct: 1 },
-      { question: "Raiku’s mission can be summed up as:", options: ["Scaling Solana UX","Creating NFT marketplaces","Becoming Ethereum 2.0","Only governance"], correct: 0 },
-      { question: "Why is Raiku important?", options: ["It helps Solana stay reliable for users & devs","It increases gas fees","It reduces decentralization","It stops validators"], correct: 0 }
+      { question: "What happens when Raiku schedules a transaction Ahead-of-Time (AoT)?",
+        options: ["It’s pushed to the end of the queue","It reserves space in a future block before load spikes","It lowers gas fees only after confirmation","It waits until network congestion eases"],
+        correct: 1 },
+      { question: "Raiku’s Coordination Engine primarily ensures which of the following?",
+        options: ["Developers can reduce their code size","Transactions arrive on time, even during congestion","Token rewards are higher for validators only","Only small transactions are processed first"],
+        correct: 1 },
+      { question: "Which component allows apps to run logic close to validators with low latency?",
+        options: ["Traditional smart contracts","Gas limit increase","Sidecar / Edge-compute zones","Off-chain storage"],
+        correct: 2 },
+      { question: "How does Raiku help prevent MEV abuses?",
+        options: ["By ignoring priority fees","Through deterministic scheduling and inclusion signals","By centralizing block producers","By delaying all transactions"],
+        correct: 1 },
+      { question: "Raiku supports two reservation methods for scheduling. What are they?",
+        options: ["Static and Dynamic","On-chain and Off-chain","Ahead-of-Time (AoT) and Just-in-Time (JiT)","Public and Private"],
+        correct: 2 },
+      { question: "For which applications does Raiku provide the most benefit?",
+        options: ["Low-volume blogs","Trading, AI, high throughput dApps","Single user wallets","Random small token mints"],
+        correct: 1 },
+      { question: "What guarantee does Raiku aim to provide to users during high traffic?",
+        options: ["Lower transaction fees only","Guaranteed block inclusion and reduced failures","Free transactions on holidays","Unlimited gas for everyone"],
+        correct: 1 },
+      { question: "Which phrase best describes Raiku’s mission?",
+        options: ["Make Solana more expensive","Add features that make apps slower","Provide reliability, certainty, and determinism for dApps","Focus only on NFTs"],
+        correct: 2 },
+      { question: "What’s novel about Raiku’s slot marketplace?",
+        options: ["It auctions NFTs","Reserve blockspace ahead of time with guarantees","Only works for testnet","Requires heavy proof-of-work"],
+        correct: 1 },
+      { question: "Which evidence proves Raiku’s institutional reliability?",
+        options: ["A small hackathon","Raised $13.5M & partnership with Blockdaemon","Only solo developers","No external investors"],
+        correct: 1 }
     ];
 
     const roles = [
       "@Raiku Team – Core members",
       "@Mod – Official moderators",
       "@Ascendant – Earned by proving yourself",
-      "@Raiku OG – Passionate culture builders",
+      "@Raiku OG – Shaping culture & persistence",
       "@Supercell – Recognized contributor",
-      "@Novice – Entry-level after bot checks"
+      "@Novice – Entry level after checks"
     ];
 
-    const funfacts = [
-      "Raiku helps Solana handle thousands of users without breaking.",
-      "Blockspace reservations = guaranteed space for your app.",
-      "Failed transactions waste time and money – Raiku fixes that.",
-      "Perfect for games, AI, and trading apps on Solana.",
-      "Raiku keeps UX smooth even during peak hours.",
-      "Think of Raiku as Solana’s traffic controller.",
-      "It prevents dApps from crashing under heavy load.",
-      "Developers love Raiku because it’s reliable.",
-      "Users benefit because transactions just work.",
-      "Raiku = reliability + speed on Solana."
+    const badges = [
+      { threshold: 3, name: "Storm Chaser" },
+      { threshold: 5, name: "Chain Master" },
+      { threshold: 8, name: "Raiku Ascendant" },
+      { threshold: 10, name: "Legend of Raiku" }
     ];
 
-    let currentQuestion = 0, score = 0, username = "";
-    const progressEl = document.getElementById("progress");
+    let currentQuestion = 0, score = 0, roleIndex = 0, username = "";
 
-    document.getElementById("startWithName").onclick = () => {
+    function startQuiz() {
       username = document.getElementById("username").value || "Guest";
-      document.getElementById("intro").classList.remove("active");
+      document.getElementById("intro-screen").classList.remove("active");
       document.getElementById("quiz-screen").classList.add("active");
       loadQuestion();
-    };
+    }
 
     function loadQuestion() {
       const q = quizData[currentQuestion];
@@ -232,8 +232,9 @@
         optionsContainer.appendChild(el);
       });
       document.getElementById("next-btn").disabled = true;
-      document.getElementById("funfact").textContent = funfacts[currentQuestion];
-      progressEl.style.width = `${(currentQuestion/quizData.length)*100}%`;
+      document.getElementById("feedback").textContent = "";
+      document.getElementById("feedback").className = "feedback";
+      updateProgress();
     }
 
     function selectOption(i) {
@@ -244,19 +245,28 @@
         else if (idx === i) opt.classList.add("incorrect");
         opt.style.pointerEvents = "none";
       });
+      const feedback = document.getElementById("feedback");
       if (i === q.correct) {
         score++;
-        new Audio("https://assets.mixkit.co/sfx/download/mixkit-correct-answer-tone-2870.wav").play();
+        feedback.textContent = "✅ Correct!";
+        feedback.classList.add("correct");
+        playSound("correct");
       } else {
-        new Audio("https://assets.mixkit.co/sfx/download/mixkit-wrong-answer-fail-notification-946.wav").play();
+        feedback.textContent = "❌ Incorrect.";
+        feedback.classList.add("incorrect");
+        playSound("incorrect");
       }
       document.getElementById("next-btn").disabled = false;
     }
 
     function nextQuestion() {
+      const feedback = document.getElementById("feedback");
       document.getElementById("quiz-screen").classList.remove("active");
-      document.getElementById("role-screen").classList.add("active");
-      document.getElementById("role-info").textContent = roles[currentQuestion % roles.length];
+      if (feedback.classList.contains("correct")) {
+        document.getElementById("role-screen").classList.add("active");
+        document.getElementById("role-info").textContent = roles[roleIndex % roles.length];
+        roleIndex++;
+      } else continueQuiz();
     }
 
     function continueQuiz() {
@@ -265,39 +275,42 @@
       if (currentQuestion < quizData.length) {
         document.getElementById("quiz-screen").classList.add("active");
         loadQuestion();
-      } else {
-        showResults();
-      }
+      } else showResults();
+    }
+
+    function updateProgress() {
+      const progress = document.getElementById("progress");
+      progress.style.width = `${(currentQuestion / quizData.length) * 100}%`;
     }
 
     function showResults() {
       document.getElementById("results-screen").classList.add("active");
-      document.getElementById("results-message").textContent = 
+      document.getElementById("results-message").textContent =
         `${username}, you scored ${score}/${quizData.length}!`;
-
-      let badge = "";
-      if (score >= 10) badge = "🌀 Raiku Ascendant";
-      else if (score >= 8) badge = "🌪️ Raiku Storm";
-      else if (score >= 5) badge = "⚡ Raiku Spark";
-      else if (score >= 3) badge = "🌱 Raiku Sprout";
-      if (badge) {
-        document.getElementById("badge-earned").innerHTML = `<div class="badge">${badge}</div>`;
-      }
-      progressEl.style.width = "100%";
+      const badgeContainer = document.getElementById("badges-earned");
+      badgeContainer.innerHTML = "";
+      badges.forEach(b => {
+        if (score >= b.threshold) {
+          const el = document.createElement("div");
+          el.className = "badge";
+          el.textContent = `🏅 ${b.name}`;
+          badgeContainer.appendChild(el);
+        }
+      });
     }
 
     function restartQuiz() {
-      currentQuestion = 0; score = 0;
+      currentQuestion = 0; score = 0; roleIndex = 0;
       document.getElementById("results-screen").classList.remove("active");
-      document.getElementById("intro").classList.add("active");
-      progressEl.style.width = "0%";
+      document.getElementById("intro-screen").classList.add("active");
     }
 
-    // Easter egg: triple-click logo
-    document.querySelector(".logo").addEventListener("click", (e) => {
-      if (!e.detail || e.detail % 3 !== 0) return;
-      alert("🐰 You found an Easter Egg! Raiku loves explorers like you.");
-    });
+    function playSound(type) {
+      let audio = new Audio(type === "correct" ? 
+        "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" : 
+        "https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg");
+      audio.play();
+    }
   </script>
 </body>
 </html>
