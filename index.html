@@ -79,6 +79,7 @@
       margin: 20px 0;
       height: 20px;
       overflow: hidden;
+      position: relative;
     }
     .progress {
       height: 100%;
@@ -95,15 +96,39 @@
       border: 2px solid #48c6ef;
       font-size: 0.9rem;
     }
-    .socials {
-      text-align: center;
-      margin-top: 20px;
-    }
+    .socials { text-align: center; margin-top: 20px; }
     .socials a {
       margin: 0 10px;
       color: #48c6ef;
       font-size: 1.5rem;
       text-decoration: none;
+    }
+    .funfact {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid gold;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: gold;
+    }
+    .role-guide {
+      margin-top: 20px;
+    }
+    .role-card {
+      background: #1f2a48;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      border: 1px solid #48c6ef;
+    }
+    .easter-egg {
+      position: absolute;
+      right: 10px;
+      top: -25px;
+      cursor: pointer;
+      font-size: 1.2rem;
     }
   </style>
 </head>
@@ -127,9 +152,9 @@
         <li>10/10 → <b>Legend of Raiku</b></li>
       </ul>
       <div class="socials">
-        <a href="https://twitter.com/raiku_xyz" target="_blank">🐦</a>
-        <a href="https://discord.gg/raiku" target="_blank">💬</a>
-        <a href="https://www.raiku.com" target="_blank">🌐</a>
+        <a href="https://x.com/raikucom" target="_blank">🐦</a>
+        <a href="https://www.raiku.com/" target="_blank">🌐</a>
+        <a href="https://www.linkedin.com/company/raikucom/" target="_blank">💼</a>
       </div>
       <input id="username" placeholder="Enter your username" style="padding:8px;border-radius:8px;border:none;width:100%;margin-top:15px;text-align:center;">
       <button class="btn" onclick="startQuiz()">Start Quiz</button>
@@ -137,10 +162,14 @@
 
     <!-- Quiz Screen -->
     <div id="quiz-screen" class="quiz-section">
-      <div class="progress-bar"><div id="progress" class="progress"></div></div>
+      <div class="progress-bar">
+        <div id="progress" class="progress"></div>
+        <span class="easter-egg" onclick="triggerEasterEgg()">🌟</span>
+      </div>
       <div class="question" id="question-text"></div>
       <div class="options" id="options-container"></div>
       <div id="feedback" class="feedback"></div>
+      <div id="funfact" class="funfact"></div>
       <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Next</button>
     </div>
 
@@ -156,6 +185,17 @@
       <h2>Quiz Complete!</h2>
       <p id="results-message"></p>
       <div id="badges-earned"></div>
+
+      <!-- Role Guide -->
+      <div class="role-guide">
+        <h3>Complete Role Guide</h3>
+        <div class="role-card"><b>@Raiku Team</b> – Core builders & decision makers</div>
+        <div class="role-card"><b>@Mod</b> – Community guardians & helpers</div>
+        <div class="role-card"><b>@Ascendant</b> – Advanced contributors proving themselves</div>
+        <div class="role-card"><b>@Raiku OG</b> – Early supporters shaping Raiku culture</div>
+        <div class="role-card"><b>@Supercell</b> – Recognized community builders</div>
+        <div class="role-card"><b>@Novice</b> – Entry-level role after basic checks</div>
+      </div>
       <button class="btn" onclick="restartQuiz()">Play Again</button>
     </div>
   </div>
@@ -192,6 +232,19 @@
       { question: "Which evidence proves Raiku’s institutional reliability?",
         options: ["A small hackathon","Raised $13.5M & partnership with Blockdaemon","Only solo developers","No external investors"],
         correct: 1 }
+    ];
+
+    const funFacts = [
+      "Raiku raised $13.5M to build a new coordination layer on Solana.",
+      "Ahead-of-Time scheduling lets you reserve blockspace like booking a ticket.",
+      "Just-in-Time scheduling is like getting VIP entry exactly when you need it.",
+      "Raiku protects apps from MEV attacks with deterministic execution.",
+      "Validators run sidecars to execute logic faster & closer to the chain.",
+      "Raiku’s slot marketplace ensures guaranteed inclusion under load.",
+      "Designed for trading, AI, and high-frequency apps on Solana.",
+      "Raiku ensures block inclusion even during congestion peaks.",
+      "Fun fact: Raiku’s role system builds community trust & culture.",
+      "Partnership with Blockdaemon boosts Raiku’s institutional strength."
     ];
 
     const roles = [
@@ -233,7 +286,7 @@
       });
       document.getElementById("next-btn").disabled = true;
       document.getElementById("feedback").textContent = "";
-      document.getElementById("feedback").className = "feedback";
+      document.getElementById("funfact").textContent = "";
       updateProgress();
     }
 
@@ -250,12 +303,11 @@
         score++;
         feedback.textContent = "✅ Correct!";
         feedback.classList.add("correct");
-        playSound("correct");
       } else {
         feedback.textContent = "❌ Incorrect.";
         feedback.classList.add("incorrect");
-        playSound("incorrect");
       }
+      document.getElementById("funfact").textContent = "⭐ Fun Fact: " + funFacts[currentQuestion];
       document.getElementById("next-btn").disabled = false;
     }
 
@@ -305,11 +357,9 @@
       document.getElementById("intro-screen").classList.add("active");
     }
 
-    function playSound(type) {
-      let audio = new Audio(type === "correct" ? 
-        "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" : 
-        "https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg");
-      audio.play();
+    // Easter egg feature
+    function triggerEasterEgg() {
+      alert("🌟 Secret Raiku Easter Egg Found! You unlocked hidden wisdom: 'Determinism is power.'");
     }
   </script>
 </body>
