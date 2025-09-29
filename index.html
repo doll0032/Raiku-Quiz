@@ -1,316 +1,668 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Raiku Quiz</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #0d0f1c 0%, #1a2a6c 100%);
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .container {
-      background: rgba(20, 20, 40, 0.95);
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-      width: 100%;
-      max-width: 800px;
-      padding: 30px;
-      position: relative;
-    }
-    .logo {
-      font-size: 2.5rem;
-      font-weight: bold;
-      background: linear-gradient(45deg, #48c6ef, #6f86d6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .subtitle { text-align: center; margin-bottom: 30px; color: #aaa; }
-    .quiz-section { display: none; }
-    .quiz-section.active { display: block; animation: fadeIn 0.4s ease; }
-    @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
-    .question { margin-bottom: 20px; font-size: 1.2rem; }
-    .options { display: grid; gap: 12px; }
-    .option {
-      background: #1f2a48;
-      border: 2px solid #333;
-      border-radius: 12px;
-      padding: 12px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .option:hover { border-color: #48c6ef; }
-    .option.correct { border-color: #4caf50; }
-    .option.incorrect { border-color: #f44336; }
-    .btn {
-      background: linear-gradient(45deg, #48c6ef, #6f86d6);
-      border: none;
-      padding: 12px 25px;
-      border-radius: 25px;
-      color: white;
-      font-weight: bold;
-      margin: 20px auto 0;
-      display: block;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    .btn:hover { transform: scale(1.05); }
-    .role-info {
-      background: #0e1430;
-      padding: 20px;
-      border-radius: 12px;
-      margin-top: 20px;
-      text-align: center;
-      color: #f5f5f5;
-      font-weight: bold;
-    }
-    .feedback { margin-top: 15px; font-weight: bold; text-align:center; }
-    .feedback.correct { color: #4caf50; }
-    .feedback.incorrect { color: #f44336; }
-    .progress-bar {
-      height: 10px;
-      background: #222;
-      border-radius: 8px;
-      margin: 15px 0;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      width: 0;
-      background: linear-gradient(90deg, #48c6ef, #6f86d6);
-      transition: width 0.3s ease;
-    }
-    .badge {
-      margin: 15px 0;
-      padding: 10px;
-      border-radius: 12px;
-      background: #1f2a48;
-      text-align: center;
-      font-weight: bold;
-      animation: pop 0.4s ease;
-    }
-    @keyframes pop {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    .fun-fact {
-      margin-top: 20px;
-      background: #ffd700;
-      color: #111;
-      font-weight: bold;
-      border-radius: 12px;
-      padding: 12px;
-      text-align: center;
-      animation: fadeIn 0.4s ease;
-    }
-    #mute-btn {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: #222;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Raiku Quiz — Docs Essentials</title>
+<style>
+  /* Reset & base */
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg,#0d0f1c 0%,#1a2a6c 100%);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;padding:12px;overflow-x:hidden;
+  }
+
+  /* Container */
+  .container{
+    width:100%; max-width:920px; margin:0 auto;
+    background: rgba(8,10,24,0.98);
+    border-radius:14px; padding:18px;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+    position:relative;
+  }
+
+  /* Header */
+  .header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{
+    width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:22px;color:#071226;background:linear-gradient(135deg,#48c6ef,#6f86d6);
+    cursor:pointer; user-select:none;
+  }
+  .title{font-size:18px;font-weight:800}
+  .subtitle{color:#cfd9fb;font-size:13px;margin-top:4px}
+
+  /* Top small controls */
+  .top-controls{display:flex;gap:8px;align-items:center}
+  .mute-btn{background:#0f1630;border:1px solid rgba(255,255,255,0.04);color:#eaf1ff;padding:8px;border-radius:10px;cursor:pointer}
+  .profile-name{font-weight:800;color:#cfe9ff}
+
+  /* Progress */
+  .progress-wrap{margin-top:14px}
+  .progress-bar{height:10px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,#7ee8fa,#80ffdb,#c77dff);transition:width 350ms ease}
+
+  /* Layout */
+  .main{display:flex;gap:18px;align-items:flex-start;margin-top:14px;flex-wrap:wrap}
+  .left{flex:1;min-width:260px}
+  .right{width:320px;min-width:240px}
+
+  /* bubble/card */
+  .bubble{
+    background:#07102a;border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,0.03);
+    box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+  }
+  .lead{font-weight:900;color:#eaf1ff;font-size:16px}
+  .small{font-size:13px;color:#bfcaf2}
+
+  /* Start / Intro Screen */
+  .intro-list{margin-top:10px;display:grid;gap:8px}
+  .badge-info{display:flex;gap:8px;align-items:center;border-radius:10px;padding:8px 10px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));font-weight:800}
+
+  input[name="username"]{
+    width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#eef6ff;margin-top:8px
+  }
+
+  /* Quiz area */
+  .question{font-weight:800;color:#eaf1ff;font-size:18px;margin-bottom:10px}
+  .options{display:grid;gap:10px}
+  .option{
+    background:#081229;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);cursor:pointer;color:#dfe9ff;
+    transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  }
+  .option:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(46,99,255,0.06);border-color:rgba(120,140,255,0.12)}
+  .option.correct{border-color:rgba(76,175,80,0.9);background:linear-gradient(90deg, rgba(76,175,80,0.04), transparent)}
+  .option.incorrect{border-color:rgba(244,67,54,0.9);background:linear-gradient(90deg, rgba(244,67,54,0.03), transparent)}
+
+  .feedback{margin-top:10px;text-align:center;font-weight:800}
+  .feedback.correct{color:#71e08b}
+  .feedback.incorrect{color:#ff9b9b}
+
+  /* Centered button */
+  .btn{display:block;margin:18px auto 0;padding:12px 26px;border-radius:999px;border:none;background:linear-gradient(45deg,#48c6ef,#6f86d6);color:#051224;font-weight:900;cursor:pointer;box-shadow:0 10px 28px rgba(79,70,229,0.12)}
+  .btn:active{transform:translateY(2px) scale(.996)}
+  .btn[disabled]{opacity:.5;cursor:not-allowed;box-shadow:none;transform:none}
+
+  /* Right column: role + fun fact */
+  .role-card{background:#04102a;border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.03);text-align:center}
+  .role-name{font-weight:900;color:#dff8ff}
+  .role-desc{color:#cfe9ff;font-size:13px;margin-top:6px}
+
+  .fun-fact{margin-top:12px;padding:10px;border-radius:10px;background:linear-gradient(180deg,#ffd34d,#ffdf8a);color:#07122a;font-weight:900;display:flex;gap:10px;align-items:center}
+  .star{background:rgba(0,0,0,0.06);padding:6px;border-radius:8px;font-size:18px}
+
+  /* Result badges */
+  .badges{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .badge{padding:10px;border-radius:10px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0));font-weight:900;text-align:center}
+
+  /* Small tip (easter hover) */
+  .hint-tip{font-size:12px;color:#cbd6f6;margin-top:8px;text-align:center}
+
+  /* Confetti canvas */
+  #confetti-canvas{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:9999}
+
+  /* Responsive */
+  @media(max-width:900px){
+    .right{width:100%}
+    .main{flex-direction:column}
+    .btn{width:100%}
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <button id="mute-btn" onclick="toggleMute()">🔊</button>
-    <div class="logo">🌀 RAIKU QUIZ</div>
-    <div class="subtitle">Learn Raiku while playing!</div>
+  <div class="container" role="main">
+    <div class="header">
+      <div class="brand">
+        <div id="logo" class="logo" title="Raiku">R</div>
+        <div>
+          <div class="title">Raiku Quiz</div>
+          <div class="subtitle">Learn core ideas from the whitepaper & litepaper</div>
+        </div>
+      </div>
 
-    <!-- Start Screen -->
-    <div id="start-screen" class="quiz-section active">
-      <h2>Welcome!</h2>
-      <p>Answer Raiku whitepaper/litepaper questions. Correct answers unlock Discord role info.</p>
-      <button class="btn" onclick="startQuiz()">Start Quiz</button>
+      <div class="top-controls">
+        <div class="small">Profile: <span id="profileName" class="profile-name">Guest</span></div>
+        <button id="muteToggle" class="mute-btn" title="Toggle sound">🔊</button>
+      </div>
     </div>
 
-    <!-- Quiz Screen -->
-    <div id="quiz-screen" class="quiz-section">
-      <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
-      <div class="question" id="question-text"></div>
-      <div class="options" id="options-container"></div>
-      <div id="feedback" class="feedback"></div>
-      <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Next</button>
-      <div id="fun-fact" class="fun-fact"></div>
+    <div class="progress-wrap">
+      <div class="progress-bar" aria-hidden="true"><div id="progressFill" class="progress-fill"></div></div>
     </div>
 
-    <!-- Role Info Screen -->
-    <div id="role-screen" class="quiz-section">
-      <h2>🎭 Discord Role Info</h2>
-      <div class="role-info" id="role-info"></div>
-      <button class="btn" onclick="continueQuiz()">Continue</button>
+    <div class="main">
+      <!-- Left: start / quiz / results -->
+      <div class="left">
+        <!-- Start / Intro screen -->
+        <div id="intro" class="bubble">
+          <div class="lead">Quick Raiku overview</div>
+          <div class="intro-list small" style="margin-top:10px">
+            <div>• Raiku is designed to improve UX & developer experience on Solana by adding predictable, deterministic execution and reliable inclusion for reserved blockspace.</div>
+            <div>• It uses concepts like Ahead-of-Time (AoT) & Just-in-Time (JiT) reservations and a sidecar model adjacent to validators.</div>
+            <div>• Raiku aims to reduce failures under heavy load and make ordering fairer to mitigate MEV impacts.</div>
+            <div>• Target apps: high-throughput systems (trading, AI, DePIN, etc.).</div>
+          </div>
+
+          <div style="margin-top:12px" class="lead">Badge rules</div>
+          <div class="intro-list" style="margin-top:8px">
+            <div class="badge-info">🌱 3 correct → <strong>Raiku Sprout</strong></div>
+            <div class="badge-info">⚡ 5 correct → <strong>Raiku Spark</strong></div>
+            <div class="badge-info">🌪️ 8 correct → <strong>Raiku Storm</strong></div>
+            <div class="badge-info">🌀 10 correct → <strong>Raiku Ascendant</strong> (perfect)</div>
+          </div>
+
+          <div style="margin-top:14px">
+            <label class="small">Enter your display name (this will be your profile on this device)</label>
+            <input id="username" name="username" placeholder="Your display name" />
+            <div style="margin-top:10px">
+              <button id="startWithName" class="btn">Start Quiz</button>
+            </div>
+            <div class="hint-tip">Easter eggs: triple-click the R logo, or try the Konami code on keyboard!</div>
+          </div>
+        </div>
+
+        <!-- Quiz screen -->
+        <div id="quiz" style="display:none">
+          <div class="bubble">
+            <div id="qCount" class="small" style="margin-bottom:8px">Question 1 / 10</div>
+            <div id="qText" class="question">Question text</div>
+            <div id="options" class="options" role="list"></div>
+            <div id="feedback" class="feedback" aria-live="polite"></div>
+            <div style="margin-top:12px">
+              <button id="next" class="btn" disabled>Next</button>
+            </div>
+            <div class="hint-tip">Tip: discover hidden hover areas for small surprises ✨</div>
+          </div>
+        </div>
+
+        <!-- Result & profile (shows earned roles + badges saved to profile) -->
+        <div id="result" style="display:none; margin-top:12px">
+          <div class="bubble">
+            <div id="resultTitle" class="lead">Quiz Complete</div>
+            <div id="resultMsg" class="small" style="margin-top:6px"></div>
+
+            <div style="margin-top:12px">
+              <div class="lead">Earned roles</div>
+              <div id="earnedRoles" class="small" style="margin-top:8px">— none yet —</div>
+            </div>
+
+            <div style="margin-top:12px">
+              <div class="lead">Badges</div>
+              <div id="earnedBadges" class="badges"></div>
+            </div>
+
+            <div style="margin-top:12px">
+              <button id="playAgain" class="btn">Play Again</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: role preview & fun fact -->
+      <div class="right">
+        <div id="rolePreview" class="role-card">
+          <div class="role-name" id="roleName">Role preview</div>
+          <div class="role-desc" id="roleDesc">Correct answers unlock roles that will be saved to your profile</div>
+        </div>
+
+        <div id="funFact" class="fun-fact" style="margin-top:12px">
+          <div class="star">⭐</div>
+          <div id="funFactText">A highlighted fact will appear here per question</div>
+        </div>
+      </div>
     </div>
 
-    <!-- Results Screen -->
-    <div id="results-screen" class="quiz-section">
-      <h2>Quiz Complete!</h2>
-      <p id="results-message"></p>
-      <div id="badge-container"></div>
-      <button class="btn" onclick="restartQuiz()">Play Again</button>
-    </div>
+    <!-- confetti canvas -->
+    <canvas id="confetti-canvas"></canvas>
   </div>
 
-  <!-- Confetti -->
-  <canvas id="confetti-canvas"></canvas>
+<script>
+/* =========================
+   Core data: questions, roles, fun facts
+   ========================= */
+const quizData = [
+  { question: "What is Raiku’s primary mission within the Solana ecosystem?", options: ["To raise transaction fees","To enable predictable, deterministic execution and reliable inclusion","To replace Solana entirely","To serve as a DeFi protocol"], correct: 1 },
+  { question: "What kind of layer does Raiku represent in blockchain architecture?", options: ["A rollup","A coordination / execution layer (sidecar)","A layer-2 scaling chain","An offchain oracle network"], correct: 1 },
+  { question: "What does “guaranteed inclusion” mean in the Raiku context?", options: ["That every transaction pays zero fees","That transactions scheduled via Raiku are assured to be included on chain","That all users are automatically validated","That block producers vote for every transaction"], correct: 1 },
+  { question: "Which models of blockspace reservation does Raiku support?", options: ["Token locking only","Ahead-of-Time (AoT) and Just-in-Time (JiT) reservations","First come first served only","Auction based only"], correct: 1 },
+  { question: "What is the role of a validator in Raiku’s system?", options: ["Only accept deposits","Execute all Solana smart contracts","Approve and allocate reserved blockspace, interface with Raiku sidecar","None — Raiku works without validators"], correct: 2 },
+  { question: "How does Raiku aim to mitigate transaction failures under heavy load?", options: ["By reducing maximum TPS","Through deterministic scheduling and blockspace reservation","By ignoring invalid transactions","By forcing all users into queues"], correct: 1 },
+  { question: "What types of applications does Raiku specifically target or support?", options: ["Only NFT marketplaces","High throughput apps: trading, AI, DePIN, etc.","Offline apps","Blogging platforms only"], correct: 1 },
+  { question: "What is the “sidecar” concept in Raiku?", options: ["A sidechain that runs separately","A module adjacent to validators that handles block scheduling/reservation logic","A user wallet app","A governance forum"], correct: 1 },
+  { question: "How does Raiku help with MEV (Miner/Validator Extractable Value)?", options: ["By banning MEV strictly","By making execution ordering deterministic and fair via reserved blockspace","By letting only large validators participate","It doesn’t address MEV"], correct: 1 },
+  { question: "What is a key benefit for developers using Raiku over standard Solana execution?", options: ["They pay no fees ever","They gain predictability, lower failure rate, and smoother UX under stress","They can eliminate blockchain consensus","They only write contracts in a new language"], correct: 1 }
+];
 
-  <audio id="correct-sound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
-  <audio id="wrong-sound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+const roles = [
+  { name:"@Raiku Team", desc:"Core members of the Raiku team" },
+  { name:"@Mod", desc:"Official mods for Raiku Discord" },
+  { name:"@Ascendant", desc:"Earned by proving yourself worthy" },
+  { name:"@Raiku OG", desc:"Passion, persistence, shaping culture" },
+  { name:"@Supercell", desc:"Recognized contributor to Raiku" },
+  { name:"@Novice", desc:"Entry-level after bot checks" }
+];
 
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script>
-    const quizData = [
-      { question: "What is Raiku’s primary mission within the Solana ecosystem?", options: ["To raise transaction fees","To enable predictable, deterministic execution and reliable inclusion","To replace Solana entirely","To serve as a DeFi protocol"], correct: 1 },
-      { question: "What kind of layer does Raiku represent in blockchain architecture?", options: ["A rollup","A coordination / execution layer (sidecar)","A layer-2 scaling chain","An offchain oracle network"], correct: 1 },
-      { question: "What does “guaranteed inclusion” mean in the Raiku context?", options: ["That every transaction pays zero fees","That transactions scheduled via Raiku are assured to be included on chain","That all users are automatically validated","That block producers vote for every transaction"], correct: 1 },
-      { question: "Which models of blockspace reservation does Raiku support?", options: ["Token locking only","Ahead-of-Time (AoT) and Just-in-Time (JiT) reservations","First come first served only","Auction based only"], correct: 1 },
-      { question: "What is the role of a validator in Raiku’s system?", options: ["Only accept deposits","Execute all Solana smart contracts","Approve and allocate reserved blockspace, interface with Raiku sidecar","None — Raiku works without validators"], correct: 2 },
-      { question: "How does Raiku aim to mitigate transaction failures under heavy load?", options: ["By reducing maximum TPS","Through deterministic scheduling and blockspace reservation","By ignoring invalid transactions","By forcing all users into queues"], correct: 1 },
-      { question: "What types of applications does Raiku specifically target or support?", options: ["Only NFT marketplaces","High throughput apps: trading, AI, DePIN, etc.","Offline apps","Blogging platforms only"], correct: 1 },
-      { question: "What is the “sidecar” concept in Raiku?", options: ["A sidechain that runs separately","A module adjacent to validators that handles block scheduling/reservation logic","A user wallet app","A governance forum"], correct: 1 },
-      { question: "How does Raiku help with MEV (Miner/Validator Extractable Value)?", options: ["By banning MEV strictly","By making execution ordering deterministic and fair via reserved blockspace","By letting only large validators participate","It doesn’t address MEV"], correct: 1 },
-      { question: "What is a key benefit for developers using Raiku over standard Solana execution?", options: ["They pay no fees ever","They gain predictability, lower failure rate, and smoother UX under stress","They can eliminate blockchain consensus","They only write contracts in a new language"], correct: 1 }
-    ];
+const funFacts = [
+  "Raiku ensures predictable execution for dApps.",
+  "Sidecar modules help validators manage reserved blockspace.",
+  "Guaranteed inclusion reduces uncertainty for user flows.",
+  "AoT/JiT reservations let teams secure or request blockspace strategically.",
+  "Raiku aims to reduce wallet popup friction and UX noise.",
+  "Deterministic scheduling reduces failures under stress.",
+  "Raiku targets high-throughput workloads (trading, AI, DePIN).",
+  "Sidecars operate adjacent to validators to coordinate inclusion.",
+  "Fair execution ordering helps mitigate MEV impact.",
+  "Developers get more predictable outcomes and smoother UX."
+];
 
-    const roles = [
-      "@Raiku Team – Core members of the Raiku team",
-      "@Mod – Official mods for Raiku Discord",
-      "@Ascendant – Earned by proving yourself worthy",
-      "@Raiku OG – Passion, persistence, shaping culture",
-      "@Supercell – Recognized contributor to Raiku",
-      "@Novice – Entry-level after bot checks"
-    ];
+/* =========================
+   State & UI pointers
+   ========================= */
+let idx = 0, score = 0, roleIndex = 0;
+let username = null;
+let earnedRoles = []; // roles earned in this session/profile
+let muted = false;
 
-    const funFacts = [
-      "✨ Raiku ensures predictable execution for dApps.",
-      "✨ Validators use Raiku’s sidecar to handle blockspace.",
-      "✨ Guaranteed inclusion removes uncertainty in UX.",
-      "✨ Supports Ahead-of-Time & Just-in-Time reservations.",
-      "✨ Raiku smooths Solana app performance under load.",
-      "✨ Developers get lower failure rates in Raiku.",
-      "✨ High-throughput apps love Raiku’s determinism.",
-      "✨ Sidecar keeps validators efficient & lean.",
-      "✨ MEV impact is reduced with Raiku scheduling.",
-      "✨ Raiku = Predictability + UX fix for Web3."
-    ];
+// UI elements
+const logo = document.getElementById('logo');
+const muteToggle = document.getElementById('muteToggle');
+const profileName = document.getElementById('profileName');
+const progressFill = document.getElementById('progressFill');
+const qCount = document.getElementById('qCount');
+const qText = document.getElementById('qText');
+const optionsDiv = document.getElementById('options');
+const feedback = document.getElementById('feedback');
+const nextBtn = document.getElementById('next');
+const funFactText = document.getElementById('funFactText');
+const roleName = document.getElementById('roleName');
+const roleDesc = document.getElementById('roleDesc');
 
-    let currentQuestion = 0, score = 0, roleIndex = 0, muted = false;
+const intro = document.getElementById('intro');
+const quiz = document.getElementById('quiz');
+const result = document.getElementById('result');
+const startBtn = document.getElementById('startWithName');
+const usernameInput = document.getElementById('username');
 
-    function startQuiz() {
-      document.getElementById("start-screen").classList.remove("active");
-      document.getElementById("quiz-screen").classList.add("active");
-      loadQuestion();
+const resultMsg = document.getElementById('resultMsg');
+const earnedRolesEl = document.getElementById('earnedRoles');
+const earnedBadgesEl = document.getElementById('earnedBadges');
+const playAgainBtn = document.getElementById('playAgain');
+
+const confettiCanvas = document.getElementById('confetti-canvas');
+
+/* =========================
+   LocalStorage profile handling
+   ========================= */
+function profileKey(name){ return `raiku_profile_${name}`; }
+function loadProfile(name){
+  try{
+    const raw = localStorage.getItem(profileKey(name));
+    if(!raw) return { roles: [], badges: [] };
+    return JSON.parse(raw);
+  }catch(e){ return { roles: [], badges: [] }; }
+}
+function saveProfile(name, data){
+  try{ localStorage.setItem(profileKey(name), JSON.stringify(data)); }catch(e){}
+}
+
+/* =========================
+   Audio via WebAudio synth (no external files)
+   - synthesized pleasant chime for correct
+   - lower buzz for wrong
+   ========================= */
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+function ensureAudio(){ if(!audioCtx) audioCtx = new AudioCtx(); }
+function playCorrectSound(){
+  if(muted) return;
+  ensureAudio();
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = 'sine';
+  o.frequency.value = 880;
+  o.connect(g); g.connect(audioCtx.destination);
+  g.gain.value = 0.0001;
+  g.gain.exponentialRampToValueAtTime(0.09, audioCtx.currentTime + 0.02);
+  o.start();
+  setTimeout(()=> o.frequency.setValueAtTime(1320, audioCtx.currentTime), 60);
+  setTimeout(()=> g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22), 220);
+  setTimeout(()=> { try{o.stop()} catch(e){} }, 300);
+}
+function playWrongSound(){
+  if(muted) return;
+  ensureAudio();
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = 'square';
+  o.frequency.value = 220;
+  o.connect(g); g.connect(audioCtx.destination);
+  g.gain.value = 0.0001;
+  g.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime + 0.01);
+  o.start();
+  setTimeout(()=> g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3), 300);
+  setTimeout(()=> { try{o.stop()} catch(e){} }, 400);
+}
+
+/* =========================
+   Confetti (canvas-confetti lib check)
+   ========================= */
+let confettiFn = null;
+if(window.confetti){
+  confettiFn = window.confetti;
+} else {
+  // minimal fallback: draw a few colored DOM flakes (very small)
+  confettiFn = function(opts){
+    // simple mini fireworks using small divs
+    const colors = ['#ffd86b','#8be9ff','#c7a7ff','#ffb3d1','#b6ffdf'];
+    const count = opts.particleCount || 60;
+    for(let i=0;i<count;i++){
+      const el = document.createElement('div');
+      el.style.position='fixed';
+      el.style.left = (window.innerWidth/2 + (Math.random()-0.5)*300) + 'px';
+      el.style.top = (window.innerHeight*0.4 + (Math.random()-0.5)*200) + 'px';
+      el.style.width = el.style.height = (6+Math.random()*8)+'px';
+      el.style.background = colors[Math.floor(Math.random()*colors.length)];
+      el.style.borderRadius = Math.random()>0.5?'50%':'2px';
+      el.style.zIndex = 99999;
+      document.body.appendChild(el);
+      const dx = (Math.random()-0.5)*800;
+      const dy = -200 - Math.random()*600;
+      const dur = 800 + Math.random()*600;
+      el.animate([{transform:'translate(0,0)',opacity:1},{transform:`translate(${dx}px,${dy}px) rotate(${Math.random()*360}deg)`, opacity:0}],{duration:dur,easing:'cubic-bezier(.2,.7,.2,1)'});
+      setTimeout(()=> el.remove(), dur+50);
     }
+  };
+}
 
-    function loadQuestion() {
-      const q = quizData[currentQuestion];
-      document.getElementById("question-text").textContent = q.question;
-      const optionsContainer = document.getElementById("options-container");
-      optionsContainer.innerHTML = "";
-      q.options.forEach((opt, i) => {
-        const el = document.createElement("div");
-        el.className = "option";
-        el.textContent = opt;
-        el.onclick = () => selectOption(i);
-        optionsContainer.appendChild(el);
-      });
-      document.getElementById("next-btn").disabled = true;
-      document.getElementById("feedback").textContent = "";
-      document.getElementById("feedback").className = "feedback";
-      document.getElementById("fun-fact").textContent = funFacts[currentQuestion];
-      updateProgress();
-    }
+/* =========================
+   Helpers: progress / UI
+   ========================= */
+function updateProgressUI(){
+  const pct = Math.round((idx / quizData.length) * 100);
+  progressFill.style.width = pct + '%';
+  qCount.innerText = `${Math.min(idx+1, quizData.length)} / ${quizData.length}`;
+}
+function showRolePreview(i){
+  const r = roles[i % roles.length];
+  roleName.innerText = r.name;
+  roleDesc.innerText = r.desc;
+  // dark background, ensure contrast
+  document.getElementById('rolePreview').style.background = '#04102a';
+}
+function saveEarnedRole(profileName, roleNameStr){
+  const prof = loadProfile(profileName);
+  if(!prof.roles) prof.roles = [];
+  if(!prof.roles.includes(roleNameStr)) prof.roles.push(roleNameStr);
+  // manage badges array
+  prof.badges = prof.badges || [];
+  saveProfile(profileName, prof);
+}
 
-    function selectOption(i) {
-      const q = quizData[currentQuestion];
-      const options = document.querySelectorAll(".option");
-      options.forEach((opt, idx) => {
-        if (idx === q.correct) opt.classList.add("correct");
-        else if (idx === i) opt.classList.add("incorrect");
-        opt.style.pointerEvents = "none";
-      });
-      const feedback = document.getElementById("feedback");
-      if (i === q.correct) {
-        score++;
-        feedback.textContent = "✅ Correct!";
-        feedback.classList.add("correct");
-        if (!muted) document.getElementById("correct-sound").play();
-      } else {
-        feedback.textContent = "❌ Incorrect.";
-        feedback.classList.add("incorrect");
-        if (!muted) document.getElementById("wrong-sound").play();
+/* =========================
+   Render a question
+   ========================= */
+function renderQuestion(){
+  const q = quizData[idx];
+  qText.innerText = q.question;
+  optionsDiv = optionsDiv = optionsDiv || document.getElementById('options');
+  optionsDiv.innerHTML = '';
+  feedback.innerText = '';
+  nextBtn.disabled = true;
+  // fun fact
+  funFactText.innerText = funFacts[idx] || '';
+
+  // create options
+  q.options.forEach((opt, i) => {
+    const d = document.createElement('div');
+    d.className = 'option';
+    d.innerText = opt;
+    d.tabIndex = 0;
+    // Easter-hover: if option contains 'sidecar' show secret tooltip on hover
+    d.addEventListener('mouseover', (ev)=>{
+      if(opt.toLowerCase().includes('sidecar')){
+        // temporary hint bubble
+        if(!d._tip){
+          const tip = document.createElement('div');
+          tip.style.position='absolute';
+          tip.style.background='rgba(255,255,255,0.06)';
+          tip.style.color='#dff8ff';
+          tip.style.padding='8px';
+          tip.style.borderRadius='8px';
+          tip.style.fontSize='12px';
+          tip.style.marginTop='6px';
+          tip.innerText = '🔍 Sidecar = adjacent module to validators';
+          d.appendChild(tip);
+          d._tip = tip;
+        }
       }
-      document.getElementById("next-btn").disabled = false;
-    }
+    });
+    d.addEventListener('mouseout', ()=>{ if(d._tip){ d._tip.remove(); d._tip=null; } });
 
-    function nextQuestion() {
-      const feedback = document.getElementById("feedback");
-      document.getElementById("quiz-screen").classList.remove("active");
-      if (feedback.classList.contains("correct")) {
-        document.getElementById("role-screen").classList.add("active");
-        document.getElementById("role-info").textContent = roles[roleIndex % roles.length];
-        roleIndex++;
-      } else {
-        continueQuiz();
-      }
-    }
+    d.addEventListener('click', ()=> handleChoose(i, d));
+    d.addEventListener('keydown', (e)=> { if(e.key === 'Enter' || e.key === ' ') handleChoose(i,d); });
+    optionsDiv.appendChild(d);
+  });
 
-    function continueQuiz() {
-      document.getElementById("role-screen").classList.remove("active");
-      currentQuestion++;
-      if (currentQuestion < quizData.length) {
-        document.getElementById("quiz-screen").classList.add("active");
-        loadQuestion();
-      } else {
-        showResults();
-      }
-    }
+  updateProgressUI();
+  showRolePreview(idx);
+}
 
-    function updateProgress() {
-      const fill = document.getElementById("progress-fill");
-      fill.style.width = `${((currentQuestion) / quizData.length) * 100}%`;
-    }
+/* =========================
+   Handle selection
+   ========================= */
+function handleChoose(i, el){
+  const q = quizData[idx];
+  const optionEls = document.querySelectorAll('.option');
+  optionEls.forEach((o,j)=>{ o.style.pointerEvents='none'; if(j===q.correct) o.classList.add('correct'); if(j===i && j!==q.correct) o.classList.add('incorrect'); });
 
-    function showResults() {
-      document.getElementById("results-screen").classList.add("active");
-      document.getElementById("results-message").textContent = `You scored ${score}/${quizData.length}!`;
+  if(i===q.correct){
+    score++;
+    feedback.innerText = '✅ Correct!';
+    feedback.className = 'feedback correct';
+    playCorrectSound();
+    // grant role preview to user profile (persist)
+    const roleGrant = roles[roleIndex % roles.length];
+    earnedRoles.push(roleGrant.name);
+    roleIndex++;
+    // save to profile storage
+    if(username){ const prof = loadProfile(username); prof.roles = prof.roles || []; if(!prof.roles.includes(roleGrant.name)) prof.roles.push(roleGrant.name); saveProfile(username, prof); }
+    // small confetti burst for correct
+    confettiFn({ particleCount: 30, spread: 50, origin: { y: 0.6 } });
+  } else {
+    feedback.innerText = '❌ Incorrect.';
+    feedback.className = 'feedback incorrect';
+    playWrongSound();
+  }
 
-      const badgeContainer = document.getElementById("badge-container");
-      badgeContainer.innerHTML = "";
-      if (score >= 3) badgeContainer.innerHTML += `<div class="badge">🌱 Raiku Sprout</div>`;
-      if (score >= 5) badgeContainer.innerHTML += `<div class="badge">⚡ Raiku Spark</div>`;
-      if (score >= 8) badgeContainer.innerHTML += `<div class="badge">🌪️ Raiku Storm</div>`;
-      if (score === 10) {
-        badgeContainer.innerHTML += `<div class="badge">🌀 Raiku Ascendant</div>`;
-        confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
-      }
-    }
+  nextBtn.disabled = false;
+  nextBtn.dataset.correct = (i===q.correct)?'1':'0';
+}
 
-    function restartQuiz() {
-      currentQuestion = 0;
-      score = 0;
-      roleIndex = 0;
-      document.getElementById("results-screen").classList.remove("active");
-      document.getElementById("start-screen").classList.add("active");
-    }
+/* =========================
+   Flow controls
+   ========================= */
+startBtn.addEventListener('click', ()=>{
+  const name = (usernameInput.value||'').trim();
+  if(!name){
+    alert('Please enter a display name to start (this will be your profile on this device).');
+    usernameInput.focus();
+    return;
+  }
+  username = name;
+  profileName.innerText = username;
+  // load profile roles
+  const profile = loadProfile(username);
+  earnedRoles = profile.roles ? [...profile.roles] : [];
+  // hide intro, show quiz
+  intro.style.display='none';
+  quiz.style.display='block';
+  idx = 0; score = 0; roleIndex = earnedRoles.length || 0;
+  renderQuestion();
+});
 
-    function toggleMute() {
-      muted = !muted;
-      document.getElementById("mute-btn").textContent = muted ? "🔇" : "🔊";
+nextBtn.addEventListener('click', ()=>{
+  const wasCorrect = nextBtn.dataset.correct === '1';
+  if(wasCorrect){
+    // show role info overlay (lightweight)
+    const overlay = document.createElement('div');
+    overlay.style.position='fixed'; overlay.style.left='50%'; overlay.style.top='50%';
+    overlay.style.transform='translate(-50%,-50%)'; overlay.style.zIndex = 99999;
+    overlay.style.padding='14px'; overlay.style.borderRadius='12px';
+    overlay.style.minWidth='300px'; overlay.style.background='#061028'; overlay.style.border='1px solid rgba(255,255,255,0.04)';
+    overlay.innerHTML = `<div style="font-weight:900;color:#eaf7ff;margin-bottom:8px">Role Unlocked</div>
+      <div style="font-weight:800;color:#dff8ff">${roles[(roleIndex-1) % roles.length].name}</div>
+      <div style="color:#cfe9ff;margin-top:8px">${roles[(roleIndex-1) % roles.length].desc}</div>
+      <div style="text-align:center;margin-top:12px"><button id="overlayContinue" class="btn">Continue</button></div>`;
+    document.body.appendChild(overlay);
+    // small highlight animation
+    overlay.animate([{transform:'translate(-50%,-50%) scale(.98)', opacity:0},{transform:'translate(-50%,-50%) scale(1)', opacity:1}],{duration:260, easing:'cubic-bezier(.2,.9,.3,1)'});
+    document.getElementById('overlayContinue').addEventListener('click', ()=>{
+      overlay.remove();
+      advanceQuestion();
+    });
+  } else {
+    advanceQuestion();
+  }
+});
+
+function advanceQuestion(){
+  idx++;
+  if(idx < quizData.length){
+    renderQuestion();
+  } else {
+    finishQuiz();
+  }
+}
+
+function finishQuiz(){
+  quiz.style.display='none';
+  result.style.display='block';
+  // results & profile: show earned roles from storage (merged)
+  const profile = loadProfile(username) || { roles: [], badges: [] };
+  const uniqueRoles = Array.from(new Set(profile.roles || [])).concat(earnedRoles || []);
+  const finalRoles = Array.from(new Set(uniqueRoles));
+  // update profile store with finalRoles
+  saveProfile(username, { roles: finalRoles, badges: profile.badges || [] });
+
+  document.getElementById('resultMsg').innerText = `${username}, you answered ${score}/${quizData.length} correctly.`;
+  document.getElementById('earnedRoles').innerText = finalRoles.length ? finalRoles.join(' • ') : '— none yet —';
+
+  // determine badges (and persist)
+  const badges = [];
+  if(score >= 3) badges.push('🌱 Raiku Sprout');
+  if(score >= 5) badges.push('⚡ Raiku Spark');
+  if(score >= 8) badges.push('🌪️ Raiku Storm');
+  if(score === 10) badges.push('🌀 Raiku Ascendant');
+
+  earnedBadgesEl.innerHTML = '';
+  badges.forEach(b=>{
+    const el = document.createElement('div'); el.className='badge'; el.innerText = b; earnedBadgesEl.appendChild(el);
+  });
+
+  // persist badges into profile
+  const prof = loadProfile(username);
+  prof.badges = prof.badges || [];
+  badges.forEach(b=>{ if(!prof.badges.includes(b)) prof.badges.push(b) });
+  saveProfile(username, prof);
+
+  // celebrate perfect
+  if(score === quizData.length){
+    confettiFn({ particleCount: 200, spread: 120, origin: { y: 0.55 } });
+  }
+}
+
+playAgainBtn.addEventListener('click', ()=>{
+  // reset UI to intro and keep profile name prefilled
+  result.style.display='none';
+  intro.style.display='block';
+  usernameInput.value = username; // keep name so user doesn't retype
+});
+
+/* =========================
+   Mute toggle & sound unlock
+   ========================= */
+document.getElementById('muteToggle').addEventListener('click', ()=>{
+  muted = !muted;
+  document.getElementById('muteToggle').innerText = muted ? '🔇' : '🔊';
+});
+document.getElementById('muteBtn')?.addEventListener?.('click', ()=>{ muted=!muted; });
+
+/* =========================
+   Logo triple-click Easter: unlock hidden role
+   ========================= */
+let logoClicks = 0;
+let logoTimer = null;
+logo.addEventListener('click', ()=>{
+  logoClicks++;
+  if(logoTimer) clearTimeout(logoTimer);
+  logoTimer = setTimeout(()=>{ logoClicks = 0; }, 800);
+  if(logoClicks >= 3){
+    logoClicks = 0;
+    // give hidden role to profile and notify
+    if(!username){
+      alert('Enter your display name first to unlock hidden role!');
+      return;
     }
-  </script>
+    const hiddenRole = '💎 Hidden OG';
+    const prof = loadProfile(username);
+    prof.roles = prof.roles || [];
+    if(!prof.roles.includes(hiddenRole)) prof.roles.push(hiddenRole);
+    saveProfile(username, prof);
+    alert('🎉 Secret unlocked: ' + hiddenRole + ' — saved to your profile!');
+  }
+});
+
+/* =========================
+   Konami code Easter badge
+   Sequence: ArrowUp ArrowUp ArrowDown ArrowDown ArrowLeft ArrowRight ArrowLeft ArrowRight b a
+   ========================= */
+const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let konamiPos = 0;
+window.addEventListener('keydown', (e)=>{
+  if(e.key === konami[konamiPos]) konamiPos++; else konamiPos = (e.key === konami[0])?1:0;
+  if(konamiPos === konami.length){
+    konamiPos = 0;
+    if(!username){ alert('Enter your display name first to unlock the secret badge!'); return; }
+    const secretBadge = '🛡️ Secret Sentinel';
+    const prof = loadProfile(username);
+    prof.badges = prof.badges || [];
+    if(!prof.badges.includes(secretBadge)) prof.badges.push(secretBadge);
+    saveProfile(username, prof);
+    alert('🎊 Konami discovered — Secret badge unlocked and saved to your profile!');
+  }
+});
+
+/* =========================
+   Init: show first preview; bind start from Enter key
+   ========================= */
+function initUI(){
+  // show preview role & fact
+  showRolePreview(0);
+  funFactText.innerText = funFacts[0];
+  qCount.innerText = `1 / ${quizData.length}`;
+  progressFill.style.width = '0%';
+  profileName.innerText = 'Guest';
+
+  // allow Enter to start
+  usernameInput.addEventListener('keydown', (e)=> { if(e.key==='Enter'){ startWithName.click(); }});
+}
+initUI();
+
+/* =========================
+   Lightweight confetti library loader (try to use CDN if available)
+   ========================= */
+(function tryLoadConfetti(){
+  if(window.confetti) return;
+  const s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js';
+  s.onload = ()=>{ console.log('confetti loaded'); };
+  s.onerror = ()=>{ console.log('confetti failed to load; using fallback'); };
+  document.head.appendChild(s);
+})();
+
+</script>
 </body>
 </html>
