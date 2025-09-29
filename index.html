@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raiku Quiz</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0d0f1c 0%, #1a2a6c 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(20, 20, 40, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 800px;
+      padding: 30px;
+    }
+    .logo {
+      font-size: 2.5rem;
+      font-weight: bold;
+      background: linear-gradient(45deg, #48c6ef, #6f86d6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .subtitle { text-align: center; margin-bottom: 30px; color: #aaa; }
+    .quiz-section { display: none; }
+    .quiz-section.active { display: block; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+    .question { margin-bottom: 20px; font-size: 1.2rem; }
+    .options { display: grid; gap: 12px; }
+    .option {
+      background: #1f2a48;
+      border: 2px solid #333;
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .option:hover { border-color: #48c6ef; }
+    .option.correct { border-color: #4caf50; }
+    .option.incorrect { border-color: #f44336; }
+    .btn {
+      background: linear-gradient(45deg, #48c6ef, #6f86d6);
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      color: white;
+      font-weight: bold;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    .role-info {
+      background: #13192c;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .feedback { margin-top: 15px; font-weight: bold; }
+    .feedback.correct { color: #4caf50; }
+    .feedback.incorrect { color: #f44336; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">🌀 RAIKU QUIZ</div>
+    <div class="subtitle">Learn Raiku while playing!</div>
+
+    <!-- Start Screen -->
+    <div id="start-screen" class="quiz-section active">
+      <h2>Welcome!</h2>
+      <p>Answer Raiku whitepaper/litepaper questions. Correct answers unlock Discord role info.</p>
+      <button class="btn" onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quiz-screen" class="quiz-section">
+      <div class="question" id="question-text"></div>
+      <div class="options" id="options-container"></div>
+      <div id="feedback" class="feedback"></div>
+      <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Next</button>
+    </div>
+
+    <!-- Role Info Screen -->
+    <div id="role-screen" class="quiz-section">
+      <h2>🎭 Discord Role Info</h2>
+      <div class="role-info" id="role-info"></div>
+      <button class="btn" onclick="continueQuiz()">Continue</button>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-screen" class="quiz-section">
+      <h2>Quiz Complete!</h2>
+      <p id="results-message"></p>
+      <button class="btn" onclick="restartQuiz()">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: "What is Raiku primarily designed to solve?",
+        options: [
+          "Scalability only",
+          "Web3 UX & developer pain points",
+          "NFT gaming",
+          "Social media replacement"
+        ],
+        correct: 1
+      },
+      {
+        question: "Which key feature makes Raiku stand out?",
+        options: [
+          "Bridgeless interoperability",
+          "Proof of Work mining",
+          "Gasless NFTs only",
+          "Centralized control"
+        ],
+        correct: 0
+      },
+      {
+        question: "What does Raiku aim to provide for developers?",
+        options: [
+          "Complex APIs",
+          "Seamless onboarding and simplified contracts",
+          "Expensive fees",
+          "Closed ecosystem"
+        ],
+        correct: 1
+      },
+      {
+        question: "What consensus model does Raiku utilize?",
+        options: [
+          "Delegated Proof of Stake",
+          "Proof of Raiku",
+          "Proof of Work",
+          "Proof of History"
+        ],
+        correct: 0
+      },
+      {
+        question: "Which of the following is a Raiku design principle?",
+        options: [
+          "Always on-chain identity",
+          "Gasless meta-transactions",
+          "No smart contract support",
+          "Heavy reliance on bridges"
+        ],
+        correct: 1
+      },
+      {
+        question: "Raiku’s approach to identity allows users to:",
+        options: [
+          "Use social logins & familiar flows",
+          "Create 50 wallets manually",
+          "Pay high gas per tx",
+          "Remain completely anonymous only"
+        ],
+        correct: 0
+      },
+      {
+        question: "Which pain point is explicitly mentioned in the Raiku whitepaper?",
+        options: [
+          "Overabundance of 2FA",
+          "Wallet popups for every transaction",
+          "Low transaction throughput",
+          "None of these"
+        ],
+        correct: 1
+      },
+      {
+        question: "Raiku's litepaper highlights:",
+        options: [
+          "Improved dev experience and smoother UX",
+          "Building only DeFi tools",
+          "Creating a new L1 with no smart contracts",
+          "Focusing only on NFTs"
+        ],
+        correct: 0
+      },
+      {
+        question: "What does Raiku avoid compared to other chains?",
+        options: [
+          "Constant bridging requirements",
+          "Onboarding users",
+          "Cross-chain composability",
+          "Decentralization"
+        ],
+        correct: 0
+      },
+      {
+        question: "The Raiku mission is best summarized as:",
+        options: [
+          "Just scaling transactions",
+          "Fixing Web3 user experience at its core",
+          "Becoming another ETH fork",
+          "Running on centralized servers"
+        ],
+        correct: 1
+      }
+    ];
+
+    const roles = [
+      "@Raiku Team – Core members of the Raiku team",
+      "@Mod – Official mods for Raiku Discord",
+      "@Ascendant – Earned by proving yourself worthy",
+      "@Raiku OG – Passion, persistence, shaping culture",
+      "@Supercell – Recognized contributor to Raiku",
+      "@Novice – Entry-level after bot checks"
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let roleIndex = 0;
+
+    function startQuiz() {
+      document.getElementById("start-screen").classList.remove("active");
+      document.getElementById("quiz-screen").classList.add("active");
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      const q = quizData[currentQuestion];
+      document.getElementById("question-text").textContent = q.question;
+      const optionsContainer = document.getElementById("options-container");
+      optionsContainer.innerHTML = "";
+      q.options.forEach((opt, i) => {
+        const el = document.createElement("div");
+        el.className = "option";
+        el.textContent = opt;
+        el.onclick = () => selectOption(i);
+        optionsContainer.appendChild(el);
+      });
+      document.getElementById("next-btn").disabled = true;
+      document.getElementById("feedback").textContent = "";
+      document.getElementById("feedback").className = "feedback";
+    }
+
+    function selectOption(i) {
+      const q = quizData[currentQuestion];
+      const options = document.querySelectorAll(".option");
+      options.forEach((opt, idx) => {
+        if (idx === q.correct) opt.classList.add("correct");
+        else if (idx === i) opt.classList.add("incorrect");
+        opt.style.pointerEvents = "none";
+      });
+      const feedback = document.getElementById("feedback");
+      if (i === q.correct) {
+        score++;
+        feedback.textContent = "✅ Correct!";
+        feedback.classList.add("correct");
+      } else {
+        feedback.textContent = "❌ Incorrect.";
+        feedback.classList.add("incorrect");
+      }
+      document.getElementById("next-btn").disabled = false;
+    }
+
+    function nextQuestion() {
+      const q = quizData[currentQuestion];
+      const feedback = document.getElementById("feedback");
+      document.getElementById("quiz-screen").classList.remove("active");
+      if (feedback.classList.contains("correct")) {
+        document.getElementById("role-screen").classList.add("active");
+        document.getElementById("role-info").textContent = roles[roleIndex % roles.length];
+        roleIndex++;
+      } else {
+        continueQuiz();
+      }
+    }
+
+    function continueQuiz() {
+      document.getElementById("role-screen").classList.remove("active");
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        document.getElementById("quiz-screen").classList.add("active");
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById("results-screen").classList.add("active");
+      document.getElementById("results-message").textContent =
+        `You scored ${score}/${quizData.length}!`;
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      roleIndex = 0;
+      document.getElementById("results-screen").classList.remove("active");
+      document.getElementById("start-screen").classList.add("active");
+    }
+  </script>
+</body>
+</html>
