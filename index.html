@@ -69,18 +69,33 @@
       margin-top: 20px;
       text-align: center;
     }
+    input {
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      width: 80%;
+      margin: 15px auto;
+      display: block;
+      font-size: 1rem;
+    }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
   <div class="container">
     <div class="logo">🌀 RAIKU QUIZ</div>
     <div class="subtitle">Learn & Explore Raiku while playing!</div>
 
+    <!-- Username Screen -->
+    <div id="username-screen" class="quiz-section active">
+      <h2>Enter your Username</h2>
+      <input type="text" id="username-input" placeholder="Your name...">
+      <button class="btn" onclick="goToStart()">Continue</button>
+    </div>
+
     <!-- Start Screen -->
-    <div id="start-screen" class="quiz-section active">
+    <div id="start-screen" class="quiz-section">
       <h2>Welcome!</h2>
-      <p>Answer Raiku-based questions and unlock role info after each question.</p>
+      <p>Answer Raiku-based questions. Earn badges & share your achievement!</p>
       <button class="btn" onclick="startQuiz()">Start Quiz</button>
     </div>
 
@@ -132,9 +147,17 @@
       "@Novice – Entry-level after bot checks",
     ];
 
+    let username = "";
     let currentQuestion = 0;
     let score = 0;
     let badge = "";
+
+    function goToStart() {
+      username = document.getElementById("username-input").value.trim();
+      if (!username) { alert("Enter username first!"); return; }
+      document.getElementById("username-screen").classList.remove("active");
+      document.getElementById("start-screen").classList.add("active");
+    }
 
     function startQuiz() {
       document.getElementById("start-screen").classList.remove("active");
@@ -189,7 +212,7 @@
 
     function showResults() {
       document.getElementById("results-screen").classList.add("active");
-      const resultsMsg = `You scored ${score}/${quizData.length}!`;
+      const resultsMsg = `${username}, you scored ${score}/${quizData.length}!`;
 
       if (score >= 10) badge = "🌀 Raiku Ascendant";
       else if (score >= 8) badge = "🌪️ Raiku Storm";
@@ -205,50 +228,61 @@
       const canvas = document.getElementById("badge-canvas");
       const ctx = canvas.getContext("2d");
 
-      // Background
+      // Background with glow
       const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      gradient.addColorStop(0, "#48c6ef");
-      gradient.addColorStop(1, "#6f86d6");
+      gradient.addColorStop(0, "#0d0f1c");
+      gradient.addColorStop(1, "#1a2a6c");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Logo
-      ctx.font = "60px Segoe UI";
-      ctx.fillStyle = "#fff";
-      ctx.textAlign = "center";
-      ctx.fillText("🌀", canvas.width/2, 80);
+      // Neon border
+      ctx.strokeStyle = "#48c6ef";
+      ctx.lineWidth = 10;
+      ctx.strokeRect(20, 20, canvas.width-40, canvas.height-40);
 
-      // Badge Title
+      // Logo
+      ctx.font = "70px Segoe UI";
+      ctx.fillStyle = "#48c6ef";
+      ctx.textAlign = "center";
+      ctx.shadowColor = "#6f86d6";
+      ctx.shadowBlur = 20;
+      ctx.fillText("🌀", canvas.width/2, 100);
+
+      // Username
       ctx.font = "28px Segoe UI Bold";
-      ctx.fillText("Raiku Quiz Badge", canvas.width/2, 150);
+      ctx.fillStyle = "#fff";
+      ctx.shadowBlur = 0;
+      ctx.fillText(username, canvas.width/2, 170);
 
       // Score
-      ctx.font = "22px Segoe UI";
-      ctx.fillText(`Score: ${score}/10`, canvas.width/2, 200);
+      ctx.font = "24px Segoe UI";
+      ctx.fillText(`Score: ${score}/10`, canvas.width/2, 220);
 
-      // Badge Earned
+      // Badge
       if (badge) {
-        ctx.font = "26px Segoe UI Bold";
-        ctx.fillText(badge, canvas.width/2, 260);
+        ctx.font = "30px Segoe UI Bold";
+        ctx.fillStyle = "#FFD700";
+        ctx.shadowColor = "#FFD700";
+        ctx.shadowBlur = 15;
+        ctx.fillText(badge, canvas.width/2, 280);
       }
 
-      // Tagline
-      ctx.font = "18px Segoe UI";
-      ctx.fillText("Proud Raiku Explorer 🌌", canvas.width/2, 320);
-
       // Footer
-      ctx.font = "16px Segoe UI";
-      ctx.fillText("@raikucom | www.raiku.com", canvas.width/2, 370);
+      ctx.font = "18px Segoe UI";
+      ctx.fillStyle = "#ccc";
+      ctx.shadowBlur = 0;
+      ctx.fillText("www.raiku.com | @raikucom", canvas.width/2, 360);
 
-      // Convert to PNG + Share
       const imageData = canvas.toDataURL("image/png");
 
+      // Auto-download
       const link = document.createElement("a");
       link.href = imageData;
       link.download = "raiku-quiz-badge.png";
       link.click();
 
-      const text = encodeURIComponent(`I just completed the Raiku Quiz and earned my badge! 🚀 Check out @raikucom 🌀`);
+      // X share with link
+      const text = encodeURIComponent(`I just completed the Raiku Quiz and earned my badge! 🚀 Check it out here: https://raiku-mind-game.vercel.app/ @raikucom`);
       const url = "https://x.com/intent/tweet?text=" + text;
       window.open(url, "_blank");
     }
@@ -258,7 +292,7 @@
       score = 0;
       badge = "";
       document.getElementById("results-screen").classList.remove("active");
-      document.getElementById("start-screen").classList.add("active");
+      document.getElementById("username-screen").classList.add("active");
     }
   </script>
 </body>
